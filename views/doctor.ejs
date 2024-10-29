@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Doctor's Page</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <link rel="stylesheet" href="/style.css">
+
+</head>
+<body>
+  <%- include("header") %>
+  <h2>Patient List</h2>
+  <ul id="patientList">
+    <% patientList.forEach((patient, index) => { %>
+      <li><%= patient.name %></li>
+    <% }) %>
+  </ul>
+  <button id="removePatientBtn">Remove Next Patient</button>
+
+  <script>
+    const socket = io();
+    const patientListElement = document.getElementById("patientList");
+    const removePatientBtn = document.getElementById("removePatientBtn");
+
+    removePatientBtn.addEventListener("click", () => {
+      socket.emit("removePatient");
+    });
+
+    socket.on("updatePatientList", (updatedList) => {
+      patientListElement.innerHTML = "";
+      updatedList.forEach((patient, index) => {
+        const li = document.createElement("li");
+        li.textContent = patient.name;
+        patientListElement.appendChild(li);
+      });
+    });
+  </script>
+</body>
+</html>

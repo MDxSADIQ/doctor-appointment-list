@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Enter Your Name</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <%- include("header") %>
+  <h2>Enter Your Name</h2>
+  <form action="/patient/submit-name" method="POST">
+    <div class="input-container">
+      <input
+        class="input"
+        name="text"
+        type="text"
+        placeholder="Enter patient name"
+        required
+      />
+    </div>
+    <button type="submit">Submit</button>
+  </form>
+</body>
+</html>

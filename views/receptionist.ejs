@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Receptionist Page</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+   
+
+  <%- include("header") %>
+  <h2>Receptionist Dashboard</h2>
+  
+  <h3>Add Patient</h3>
+  <form action="/receptionist/add" method="POST">
+    
+     
+<div class="input-container">
+  <input
+    class="input"
+    name="patientName"
+    type="text"
+    placeholder="Enter patient name"
+    required
+  />
+</div>
+
+    <button type="submit">Add Patient</button>
+  </form>
+
+  <h3>Current Patient List</h3>
+  <ul id="receptionistPatientList">
+    <% patientList.forEach((patient) => { %>
+      <li><%= patient.name %></li>
+    <% }); %>
+  </ul>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const receptionistPatientListElement = document.getElementById("receptionistPatientList");
+
+    // Listen for updates from the server to refresh the patient list
+    socket.on("updatePatientList", (updatedList) => {
+      receptionistPatientListElement.innerHTML = ""; // Clear the current list
+      updatedList.forEach(patient => {
+        const li = document.createElement("li");
+        li.textContent = patient.name;
+        receptionistPatientListElement.appendChild(li);
+      });
+    });
+  </script>
+</body>
+</html>

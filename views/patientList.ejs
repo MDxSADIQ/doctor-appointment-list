@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Position in the Queue</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <%- include("header") %>
+  <h2>Current Queue</h2>
+  <ul id="patientList"></ul>
+
+  <script>
+    const currentPatientName = "<%= patientName %>";
+    const initialPatientList =  JSON.stringify(patientList) ; // Safely passing data
+  
+    const socket = io();
+    const patientListElement = document.getElementById("patientList");
+  
+    // Function to display the patient list with anonymized names, except for the current patient's name
+    function displayPatientList(updatedList) {
+      // Check if updatedList is an array
+      if (!Array.isArray(updatedList)) {
+        console.error("Updated List is not an array:", updatedList);
+        return; // Exit if it's not an array
+      }
+  
+      patientListElement.innerHTML = "";
+      updatedList.forEach((patient, index) => {
+        const li = document.createElement("li");
+        li.textContent = patient.name === currentPatientName ? patient.name : `Patient${index + 1}`;
+        patientListElement.appendChild(li);
+      });
+    }
+  
+    // Load the initial patient list on page load
+    displayPatientList(initialPatientList);
+  
+    // Listen for updates from the server to refresh the patient list
+    socket.on("updatePatientList", (updatedList) => {
+      console.log("Received Updated Patient List:", updatedList); // Log the updated list received
+      displayPatientList(updatedList);
+    });
+  </script>
+  
+</body>
+</html>
